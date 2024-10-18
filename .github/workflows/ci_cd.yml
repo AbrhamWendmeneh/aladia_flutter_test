@@ -1,41 +1,67 @@
 name: "Build & Release"
 
 on:
-  pull_request:
-    branches:
-      - main
-
   push:
     branches:
       - main
+      - master
+      - develop
+  pull_request:
+    branches:
+      - main
+      - master
 
 jobs:
   build:
-    name: Build & Release
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v1
+    runs-on: ubuntu-latest
 
-      - uses: subosito/flutter-action@v1
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.24.1"
-      - run: flutter pub get
-      # - run: flutter test
-      # - run: flutter build apk --debug --split-per-abi
-      # - run: |
-      #     flutter build ios --no-codesign
-      #     cd build/ios/iphoneos
-      #     mkdir Payload
-      #     cd Payload
-      #     ln -s ../Runner.app
-      #     cd ..
-      #     zip -r app.ipa Payload
+          flutter-version: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run tests
+        run: flutter test
+
+      - name: Build APK
+        run: flutter build apk --debug --split-per-abi
+
+      - name: Build iOS
+        run: |
+          flutter build ios --no-codesign
+          cd build/ios/iphoneos
+          mkdir Payload
+          cd Payload
+          ln -s ../Runner.app
+          cd ..
+          zip -r app.ipa Payload
+
       - name: Push to Releases
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/app/outputs/apk/debug/*,build/ios/iphoneos/app.ipa"
+          artifacts: "build/app/outputs/flutter-apk/app-debug.apk,build/ios/iphoneos/app.ipa"
           tag: v1.0.${{ github.run_number }}
           token: ${{ secrets.GITHUB_TOKEN }}
+          generateReleaseNotes: false
+          makeLatest: legacy
+          omitBody: false
+          omitBodyDuringUpdate: false
+          omitDraftDuringUpdate: false
+          omitName: false
+          omitNameDuringUpdate: false
+          omitPrereleaseDuringUpdate: false
+          removeArtifacts: false
+          replacesArtifacts: true
+          skipIfReleaseExists: false
+          updateOnlyUnreleased: false
 
-  # push to master, main, develop
-  # pull request on main master
+      env:
+        FLUTTER_ROOT: /Users/runner/hostedtoolcache/flutter/3.24.1-stable/arm64
+        PUB_CACHE: /Users/runner/hostedtoolcache/flutter/3.24.1-stable/arm64/.pub-cache

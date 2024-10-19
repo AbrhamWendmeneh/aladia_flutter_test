@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import '../app/themes.dart';
 
 class ThemeProvider extends ChangeNotifier {
   static const String _themeModeKey = 'themeMode';

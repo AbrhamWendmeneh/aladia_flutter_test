@@ -7,7 +7,8 @@ enum AuthLoading {
   signingIn,
   signingUp,
   signingOut,
-  checkingUser
+  checkingUser,
+  verifyingUser,
 }
 
 class AuthProvider extends ChangeNotifier {
@@ -100,17 +101,22 @@ class AuthProvider extends ChangeNotifier {
       debugPrint('checkUser: ${res.toString()}');
       authLoading = null;
       notifyListeners();
-      return res.toString() == 'true';
+      if (res.item1 == false) {
+        debugPrint('internet error');
+        throw Exception('Failed to check user: ${res.item2}');
+      }
+      debugPrint('res.item2: ${res.item2}');
+      return res.item2;
     } catch (e) {
       authLoading = null;
-      return false;
+      notifyListeners();
+      throw Exception('Failed to check user: $e');
     }
   }
 
   Future<void> checkStoredAccessToken() async {
     final accessToken = await _authInteractor.getStoredAccessToken();
     if (accessToken != null) {
-      // Assume the user is signed in if an access token is found
       final user = User(
         id: '',
         email: '',
@@ -124,6 +130,18 @@ class AuthProvider extends ChangeNotifier {
       authLoading = null;
     } else {
       authLoading = null;
+    }
+  }
+
+  Future<bool> verifyUser(String email, String code) async {
+    try {
+      authLoading = AuthLoading.verifyingUser;
+      final res = await _authInteractor.verifyUser(email, code);
+      authLoading = null;
+      return res;
+    } catch (e) {
+      authLoading = null;
+      return false;
     }
   }
 

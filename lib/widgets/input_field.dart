@@ -14,8 +14,7 @@ class InputField extends StatelessWidget {
   final IconData? suffixIcon;
   final FocusNode? focusNode;
   final TextInputAction? textInputAction;
-  final VoidCallback? onSuffixIconTap; // Add callback for suffix icon tap
-
+  final VoidCallback? onSuffixIconTap; 
   const InputField({
     super.key,
     this.icon,
@@ -31,7 +30,7 @@ class InputField extends StatelessWidget {
     this.suffixIcon,
     this.focusNode,
     this.textInputAction,
-    this.onSuffixIconTap, // Add callback for suffix icon tap
+    this.onSuffixIconTap, 
   });
 
   @override
@@ -42,6 +41,7 @@ class InputField extends StatelessWidget {
       validator: validator,
       obscureText: obscureText,
       focusNode: focusNode,
+      style: TextStyle(color: appTheme.colorScheme.onSecondary),
       textInputAction: textInputAction,
       decoration: InputDecoration(
         prefixIcon: icon != null
@@ -51,11 +51,14 @@ class InputField extends StatelessWidget {
               )
             : null,
         hintText: hintText,
-        hintStyle: TextStyle(color: appTheme.colorScheme.primary),
+        hintStyle: TextStyle(color: appTheme.colorScheme.onSecondary),
         suffixIcon: suffixIcon != null
             ? GestureDetector(
                 onTap: onSuffixIconTap,
-                child: Icon(suffixIcon),
+                child: Icon(
+                  suffixIcon,
+                  color: appTheme.colorScheme.onSecondary,
+                ),
               )
             : null,
         labelText: labelText,
@@ -66,7 +69,7 @@ class InputField extends StatelessWidget {
               borderRadius: BorderRadius.circular(8.0),
             ),
         filled: true,
-        fillColor: appTheme.colorScheme.secondary,
+        fillColor: appTheme.colorScheme.onPrimaryFixed,
         errorStyle: errorStyle ?? TextStyle(color: appTheme.colorScheme.error),
       ),
     );

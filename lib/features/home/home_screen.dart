@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/login_provider.dart';
+import '../../providers/auth_provider.dart';
 import '../authentication/login/login_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -31,7 +31,10 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       body: const Center(
-        child: Text('Welcome to the home screen'),
+        child: Text(
+          'Welcome to the home screen',
+          style: TextStyle(fontSize: 16),
+        ),
       ),
     );
   }

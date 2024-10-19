@@ -1,16 +1,17 @@
 import 'package:aladia_flutter_test/features/authentication/login/login_screen.dart';
 import 'package:aladia_flutter_test/features/authentication/signup/signup_form.dart';
 import 'package:aladia_flutter_test/features/authentication/signup/signup_header.dart';
+import 'package:aladia_flutter_test/features/authentication/verification/verify_screen.dart';
+import 'package:aladia_flutter_test/shared/constants.dart';
 import 'package:aladia_flutter_test/widgets/custom_button.dart';
 import 'package:aladia_flutter_test/widgets/theme_toggle.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../providers/login_provider.dart';
-import '../../home/home_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../providers/auth_provider.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
-  static const kPadHor = 24.0;
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -25,6 +26,21 @@ class _SignupScreenState extends State<SignupScreen> {
       TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isEnteringPassword = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadEmail();
+  }
+
+  Future<void> _loadEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    final email = prefs.getString('signup_email');
+    if (email != null) {
+      _emailController.text = email;
+      await prefs.remove('signup_email');
+    }
+  }
 
   @override
   void dispose() {
@@ -57,9 +73,9 @@ class _SignupScreenState extends State<SignupScreen> {
           : null,
       body: Padding(
         padding: EdgeInsets.fromLTRB(
-          SignupScreen.kPadHor,
+          kPadHor,
           MediaQuery.paddingOf(context).top,
-          SignupScreen.kPadHor,
+          kPadHor,
           MediaQuery.paddingOf(context).bottom,
         ),
         child: Column(
@@ -79,13 +95,24 @@ class _SignupScreenState extends State<SignupScreen> {
                       confirmPasswordController: _confirmPasswordController,
                       formKey: _formKey,
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 30),
                     CustomButton(
+                      color: appTheme.colorScheme.onPrimary,
+                      borderColor: appTheme.colorScheme.secondary,
                       child: authProvider.authLoading == AuthLoading.signingUp
-                          ? const CircularProgressIndicator(
-                              backgroundColor: Colors.white,
+                          ? SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                color: appTheme.colorScheme.secondary,
+                                strokeWidth: 2,
+                              ),
                             )
-                          : const Text('Sign Up'),
+                          : Text(
+                              'Sign Up',
+                              style: TextStyle(
+                                  color: appTheme.colorScheme.onSurface),
+                            ),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           authProvider.signUp(
@@ -96,7 +123,9 @@ class _SignupScreenState extends State<SignupScreen> {
                             onSuccess: () {
                               Navigator.of(context).pushAndRemoveUntil(
                                 MaterialPageRoute(
-                                  builder: (context) => const LoginScreen(),
+                                  builder: (context) => VerifyScreen(
+                                    email: _emailController.text,
+                                  ),
                                 ),
                                 (route) => false,
                               );
@@ -107,11 +136,26 @@ class _SignupScreenState extends State<SignupScreen> {
                                   content: Text(p0),
                                 ),
                               );
-                              print(p0);
+                              debugPrint(p0);
                             },
                           );
                         }
                       },
+                    ),
+                    const SizedBox(height: 20),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                              builder: (context) => const LoginScreen(),
+                            ),
+                            (route) => false);
+                      },
+                      child: Text(
+                        'Already have an account? Sign in',
+                        style: TextStyle(
+                            color: appTheme.colorScheme.outlineVariant),
+                      ),
                     ),
                   ],
                 ),
@@ -121,40 +165,5 @@ class _SignupScreenState extends State<SignupScreen> {
         ),
       ),
     );
-  }
-}
-
-class CustomDividerPainter extends CustomPainter {
-  final Color color;
-  final double startThickness;
-  final double endThickness;
-
-  CustomDividerPainter({
-    required this.color,
-    this.startThickness = 4.0,
-    this.endThickness = 1.0,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeCap = StrokeCap.round;
-
-    final path = Path()
-      ..moveTo(0, size.height / 2)
-      ..lineTo(size.width, size.height / 2);
-
-    for (double i = 0; i < size.width; i++) {
-      double t = i / size.width;
-      paint.strokeWidth = startThickness * (1 - t) + endThickness * t;
-      canvas.drawLine(
-          Offset(i, size.height / 2), Offset(i + 1, size.height / 2), paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
   }
 }

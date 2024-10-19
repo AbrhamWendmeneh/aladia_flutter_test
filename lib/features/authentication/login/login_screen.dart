@@ -1,17 +1,19 @@
 import 'package:aladia_flutter_test/features/authentication/signup/signup_screen.dart';
+import 'package:aladia_flutter_test/shared/constants.dart';
 import 'package:aladia_flutter_test/widgets/custom_button.dart';
 import 'package:aladia_flutter_test/widgets/theme_toggle.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../home/home_screen.dart';
 import 'login_header.dart';
 import 'login_form.dart';
-import '../../../providers/login_provider.dart';
+import '../../../providers/auth_provider.dart';
 import 'social_media_buttons.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
-  static const kPadHor = 24.0;
+  
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -44,9 +46,9 @@ class _LoginScreenState extends State<LoginScreen> {
           : null,
       body: Padding(
         padding: EdgeInsets.fromLTRB(
-          LoginScreen.kPadHor,
+        kPadHor,
           MediaQuery.paddingOf(context).top,
-          LoginScreen.kPadHor,
+        kPadHor,
           MediaQuery.paddingOf(context).bottom,
         ),
         child: Column(
@@ -95,22 +97,35 @@ class _LoginScreenState extends State<LoginScreen> {
                                           content: Text(p0),
                                         ),
                                       ),
-                                      print(p0)
+                                      debugPrint(p0)
                                     });
                           }
                         } else {
                           if (_formKey.currentState!.validate()) {
-                            final userExists = await authProvider
-                                .checkUser(_emailController.text);
-                            print('loginscreen: $userExists');
-                            if (userExists == true) {
-                              setState(() {
-                                _isEnteringPassword = true;
-                              });
-                            } else {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const SignupScreen(),
+                            try {
+                              final userExists = await authProvider
+                                  .checkUser(_emailController.text);
+
+                              if (userExists) {
+                                setState(() {
+                                  _isEnteringPassword = true;
+                                });
+                              } else {
+                                final prefs =
+                                    await SharedPreferences.getInstance();
+                                await prefs.setString(
+                                    'signup_email', _emailController.text);
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => const SignupScreen(),
+                                  ),
+                                );
+                              }
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      'Failed to check user Please try again'),
                                 ),
                               );
                             }
@@ -121,8 +136,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           authProvider.authLoading == AuthLoading.signingIn ||
                                   authProvider.authLoading ==
                                       AuthLoading.checkingUser
-                              ? CircularProgressIndicator(
-                                  color: appTheme.colorScheme.secondary,
+                              ? SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    color: appTheme.colorScheme.secondary,
+                                    strokeWidth: 2,
+                                  ),
                                 )
                               : Text(
                                   'Enter',
@@ -133,41 +153,57 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (!_isEnteringPassword) ...[
                       const SizedBox(height: 20),
                       Row(
-                        // mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
                           Expanded(
-                            child: CustomPaint(
-                              painter: CustomDividerPainter(
-                                color: appTheme.colorScheme.primary,
-                                startThickness: 1.0,
-                                endThickness: 4.0,
+                            child: Container(
+                              height: 1.5,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    appTheme.colorScheme.onSurface
+                                        .withOpacity(0.0),
+                                    appTheme.colorScheme.onSurface
+                                        .withOpacity(0.5),
+                                    appTheme.colorScheme.onSurface,
+                                  ],
+                                  stops: const [0.0, 0.5, 1.0],
+                                ),
                               ),
-                              child: Container(height: 1.0),
                             ),
                           ),
                           const SizedBox(width: 20),
-                          const Text('or'),
+                          const Text(
+                            'Or',
+                            style: TextStyle(fontSize: 16),
+                          ),
                           const SizedBox(width: 20),
                           Expanded(
-                            child: CustomPaint(
-                              painter: CustomDividerPainter(
-                                color: appTheme.colorScheme.primary,
-                                startThickness: 4.0,
-                                endThickness: 1.0,
+                            child: Container(
+                              height: 1.5,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    appTheme.colorScheme.onSurface,
+                                    appTheme.colorScheme.onSurface
+                                        .withOpacity(0.5),
+                                    appTheme.colorScheme.onSurface
+                                        .withOpacity(0.0),
+                                  ],
+                                  stops: const [0.0, 0.5, 1.0],
+                                ),
                               ),
-                              child: Container(height: 1.0),
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 20),
                       const SocialMediaButtons(),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 20),
                       Text(
                         'Terms and Conditions',
                         style: TextStyle(
-                          color: appTheme.colorScheme.primary,
-                          fontSize: 16,
+                          color: appTheme.colorScheme.onSurface,
+                          fontSize: 14,
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -180,40 +216,5 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
-  }
-}
-
-class CustomDividerPainter extends CustomPainter {
-  final Color color;
-  final double startThickness;
-  final double endThickness;
-
-  CustomDividerPainter({
-    required this.color,
-    this.startThickness = 4.0,
-    this.endThickness = 1.0,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeCap = StrokeCap.round;
-
-    final path = Path()
-      ..moveTo(0, size.height / 2)
-      ..lineTo(size.width, size.height / 2);
-
-    for (double i = 0; i < size.width; i++) {
-      double t = i / size.width;
-      paint.strokeWidth = startThickness * (1 - t) + endThickness * t;
-      canvas.drawLine(
-          Offset(i, size.height / 2), Offset(i + 1, size.height / 2), paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
   }
 }

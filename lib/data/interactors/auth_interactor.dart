@@ -15,5 +15,9 @@ abstract class AuthInteractor {
   Future<String?> getStoredAccessToken() => throw UnimplementedError();
   Future<void> clearStoredAccessToken() => throw UnimplementedError();
   //check user
-  Future<bool?> checkUser(String email) => throw UnimplementedError();
+  Future<Tuple2<bool, bool>> checkUser(String email) => throw UnimplementedError();
+  // verify email
+
+  Future<bool> verifyUser(String email, String code) =>
+      throw UnimplementedError();
 }

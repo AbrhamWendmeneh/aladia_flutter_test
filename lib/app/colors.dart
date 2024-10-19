@@ -33,4 +33,14 @@ class AppColors {
 
   static const Color onErrorLight = Color(0xFFFFFFFF);
   static const Color onErrorDark = Color(0xFF000000);
+
+  static const Color shadowLight = Color(0x80898888);
+  static const Color shadowDark = Color(0x6C857F7F);
+
+  static const Color onPrimaryContainerLight = Color(0x80898888);
+  static const Color onPrimaryContainerDark = Color(0xFFFFFFFF);
+
+  // color for links
+  static const Color linkColor = Color(0xFF007AFF);
+  static const Color linkColorDark = Color(0xFFFFFFFF);
 }

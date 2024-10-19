@@ -37,7 +37,7 @@ class AuthServices implements AuthInteractor {
           'email': email,
           'password': password,
         }),
-      ); 
+      );
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
@@ -46,7 +46,7 @@ class AuthServices implements AuthInteractor {
         // store the token
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('accessToken', accessToken);
-        print('response: ${response.body}');
+        debugPrint('response: ${response.body}');
         // Since the response does not include user details, I skip user parsing
         final user = User(
           id: '',
@@ -133,7 +133,7 @@ class AuthServices implements AuthInteractor {
   }
 
   @override
-  Future<bool> checkUser(String email) async {
+  Future<Tuple2<bool, bool>> checkUser(String email) async {
     try {
       final response = await http.post(
         Uri.parse('$authUrl/user-existence'),
@@ -144,19 +144,52 @@ class AuthServices implements AuthInteractor {
           'email': email,
         }),
       );
-      print('response: ${response.statusCode}');
+      debugPrint('response: ${response.statusCode}');
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
-        print('data: ${data['exists']}');
-        return data['exists'] == true;
+        debugPrint('data: ${data['exists']}');
+        return Tuple2(true, data['exists']);
       } else if (response.statusCode == 400) {
         final Map<String, dynamic> errorData = jsonDecode(response.body);
+        debugPrint('errordata,${errorData}');
         throw Exception('Failed to check user: ${errorData['message']}');
       } else if (response.statusCode == 422) {
         final Map<String, dynamic> errorData = jsonDecode(response.body);
         throw Exception('Validation error: ${errorData['message']}');
       } else {
         throw Exception('Failed to check user');
+      }
+    } catch (e) {
+      return const Tuple2(false, false);
+    }
+  }
+
+  @override
+  Future<bool> verifyUser(String email, String code) async {
+    debugPrint('email: $email, code: $code');
+    try {
+      final response = await http.post(
+        Uri.parse('$authUrl/verify-user'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'email': email,
+          'code': int.parse(code),
+        }),
+      );
+      debugPrint('response: ${response.statusCode}');
+
+      if (response.statusCode == 201) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        final accessToken = data['accessToken'];
+        // store the token
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('accessToken', accessToken);
+        return true;
+      } else {
+        final Map<String, dynamic> errorData = jsonDecode(response.body);
+        throw Exception('Failed to verify user: ${errorData['message']}');
       }
     } catch (e) {
       rethrow;

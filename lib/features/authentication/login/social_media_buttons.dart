@@ -1,13 +1,14 @@
 import 'package:aladia_flutter_test/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
+
 class SocialMediaButtons extends StatelessWidget {
   const SocialMediaButtons({super.key});
 
   final List<Map<String, String>> socialMediaData = const [
-    {"image": "asset/images/google.png", "signIn": "Sign in with Google"},
-    {"image": "asset/images/facebook.png", "signIn": "Sign in with Facebook"},
-    {"image": "asset/images/apple.png", "signIn": "Sign in with Apple"}
+    {"image": "assets/images/google.png", "signIn": "Sign in with Google"},
+    {"image": "assets/images/facebook.png", "signIn": "Sign in with Facebook"},
+    {"image": "assets/images/apple.png", "signIn": "Sign in with Apple"}
   ];
 
   @override
@@ -22,23 +23,25 @@ class SocialMediaButtons extends StatelessWidget {
               color: appTheme.colorScheme.onPrimary,
               borderColor: appTheme.colorScheme.secondary,
               onPressed: () {},
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    data["image"]!,
-                    width: 24,
-                    height: 24,
-                  ),
-                  const SizedBox(width: 5),
-                  Text(
-                    data["signIn"]!,
-                    style: TextStyle(
-                      color: appTheme.colorScheme.onSurface,
-                      fontSize: 16,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(64.0, 0, 0, 0),
+                child: Row(
+                  children: [
+                    Image.asset(
+                      data["image"]!,
+                      width: 24,
+                      height: 24,
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 10),
+                    Text(
+                      data["signIn"]!,
+                      style: TextStyle(
+                        color: appTheme.colorScheme.onSurface,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           );

@@ -10,26 +10,29 @@ class SignupHeader extends StatelessWidget {
       width: double.infinity,
       height: 150,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        gradient: const LinearGradient(
-          colors: [Colors.black87, Colors.black],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+        border: Border.all(
+          color: appTheme.colorScheme.secondary,
+          width: 1,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.5),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(15),
+        gradient: LinearGradient(
+          colors: [
+            appTheme.colorScheme.onError,
+            appTheme.colorScheme.onPrimaryContainer,
+            appTheme.colorScheme.onError,
+          ],
+          begin: const Alignment(0.02, -0.9),
+          end: const Alignment(-0.21, 0.2),
+          stops: const [0.32, 0.52, 0.6],
+          tileMode: TileMode.repeated,
+        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           const Image(
             image: AssetImage(
-              'asset/images/home.png',
+              'assets/images/home.png',
             ),
             width: 110,
             height: 110,
@@ -38,12 +41,12 @@ class SignupHeader extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              // mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
+                Text(
                   'Nice to meet you,',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: appTheme.colorScheme.onSurface,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -52,7 +55,7 @@ class SignupHeader extends StatelessWidget {
                 Text(
                   'Create your account\nand start your journey',
                   style: TextStyle(
-                    color: Colors.grey[400],
+                    color: appTheme.colorScheme.onSurface,
                     fontSize: 14,
                   ),
                 ),

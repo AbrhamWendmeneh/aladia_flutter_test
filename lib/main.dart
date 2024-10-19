@@ -1,7 +1,5 @@
-import 'package:aladia_flutter_test/app/app.dart';
 import 'package:aladia_flutter_test/app/splash.dart';
 import 'package:aladia_flutter_test/data/services/auth_services.dart';
-import 'package:aladia_flutter_test/features/authentication/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -10,7 +8,6 @@ import 'providers/auth_provider.dart';
 import 'providers/theme_provider.dart';
 
 import 'app/themes.dart';
-// adding debug banner to false
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

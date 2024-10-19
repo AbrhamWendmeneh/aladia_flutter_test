@@ -4,20 +4,20 @@ import '../../../utils/validators.dart';
 import '../../../widgets/input_field.dart';
 
 class SignupForm extends StatefulWidget {
-  final TextEditingController nameController;
-  final TextEditingController surnameController;
-  final TextEditingController emailController;
-  final TextEditingController passwordController;
-  final TextEditingController confirmPasswordController;
-  final GlobalKey<FormState> formKey;
+  final TextEditingController? nameController;
+  final TextEditingController? surnameController;
+  final TextEditingController? emailController;
+  final TextEditingController? passwordController;
+  final TextEditingController? confirmPasswordController;
+  final GlobalKey<FormState>? formKey;
   const SignupForm(
       {super.key,
-      required this.nameController,
-      required this.surnameController,
-      required this.emailController,
-      required this.passwordController,
-      required this.confirmPasswordController,
-      required this.formKey});
+      this.nameController,
+      this.surnameController,
+      this.emailController,
+      this.passwordController,
+      this.confirmPasswordController,
+      this.formKey});
 
   @override
   State<SignupForm> createState() => _SignupFormState();
@@ -92,7 +92,7 @@ class _SignupFormState extends State<SignupForm> {
                 : Icons.visibility_off,
             onSuffixIconTap: _toggleConfirmPasswordVisibility,
             validator: Validators.confirmPasswordValidator(
-                widget.passwordController.text),
+                widget.passwordController!.text),
             textInputAction: TextInputAction.done,
           ),
         ],

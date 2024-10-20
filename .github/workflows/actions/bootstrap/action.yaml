@@ -25,6 +25,6 @@ runs:
         dart run build_runner build -d
 
     - name: Build Widgetbook
-      working-directory: widgetbook
+      working-directory: flutter_widgetbook
       shell: bash
       run: flutter build web

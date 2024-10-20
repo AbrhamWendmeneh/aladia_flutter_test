@@ -4,7 +4,10 @@ import 'package:aladia_flutter_test/app/themes.dart';
 import 'package:aladia_flutter_test/features/authentication/login/login_form.dart';
 import 'package:aladia_flutter_test/features/authentication/login/login_header.dart';
 import 'package:aladia_flutter_test/features/authentication/login/social_media_buttons.dart';
+import 'package:aladia_flutter_test/features/authentication/signup/signup_header.dart';
 import 'package:aladia_flutter_test/features/authentication/signup/signup_screen.dart';
+import 'package:aladia_flutter_test/features/authentication/verification/verification_form.dart';
+import 'package:aladia_flutter_test/features/authentication/verification/verification_header.dart';
 import 'package:aladia_flutter_test/features/authentication/verification/verify_screen.dart';
 import 'package:aladia_flutter_test/providers/auth_provider.dart';
 import 'package:aladia_flutter_test/providers/theme_provider.dart';
@@ -95,6 +98,18 @@ class WidgetbookApp extends StatelessWidget {
                   name: 'sign up page',
                   useCases: [
                     WidgetbookUseCase(
+                      name: 'signup header',
+                      builder: (context) {
+                        return const SignupHeader();
+                      },
+                    ),
+                    WidgetbookUseCase(
+                      name: 'signup form',
+                      builder: (context) {
+                        return signupFormUseCase(context);
+                      },
+                    ),
+                    WidgetbookUseCase(
                       name: 'sign up page',
                       builder: (context) {
                         return const SignupScreen();
@@ -106,6 +121,28 @@ class WidgetbookApp extends StatelessWidget {
                 WidgetbookComponent(
                   name: 'verification page',
                   useCases: [
+                    WidgetbookUseCase(
+                      name: 'verification page header',
+                      builder: (context) {
+                        return const VerificationHeader();
+                      },
+                    ),
+                    WidgetbookUseCase(
+                      name: 'verification page header',
+                      builder: (context) {
+                        return VerificationForm(
+                          onCodeChanged: (dynamic code) {
+                            context.read<AuthProvider>().verifyUser(
+                                  context.knobs.string(
+                                    label: 'Email',
+                                    initialValue: 'test@gmail.com',
+                                  ),
+                                  code,
+                                );
+                          },
+                        );
+                      },
+                    ),
                     WidgetbookUseCase(
                       name: 'verification page',
                       builder: (context) {
@@ -122,6 +159,23 @@ class WidgetbookApp extends StatelessWidget {
                       name: 'Toggle Switch',
                       builder: (context) {
                         return themeToggleSwitchUseCase(context);
+                      },
+                    ),
+                  ],
+                ),
+                WidgetbookComponent(
+                  name: 'widgets',
+                  useCases: [
+                    WidgetbookUseCase(
+                      name: 'CustomButton',
+                      builder: (context) {
+                        return customButtonUseCase(context);
+                      },
+                    ),
+                    WidgetbookUseCase(
+                      name: 'Input Field',
+                      builder: (context) {
+                        return inputFieldUseCase(context);
                       },
                     ),
                   ],
@@ -143,6 +197,13 @@ class WidgetbookApp extends StatelessWidget {
                   initialTheme: WidgetbookTheme(
                     name: 'light',
                     data: lightTheme,
+                  ),
+                ),
+                AlignmentAddon(),
+                BuilderAddon(
+                  name: 'SafeArea',
+                  builder: (_, child) => SafeArea(
+                    child: child,
                   ),
                 ),
               ],

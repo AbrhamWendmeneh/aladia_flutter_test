@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
-@widgetbook.UseCase(name: 'input field', type: ThemeToggleSwitch)
+@widgetbook.UseCase(name: 'input field toggle', type: ThemeToggleSwitch)
 Widget toggleUseCase(BuildContext context) {
   return MultiProvider(
     providers: [

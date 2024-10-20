@@ -30,10 +30,20 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: const Center(
-        child: Text(
-          'Welcome to the home screen',
-          style: TextStyle(fontSize: 16),
+      body: Center(
+        child: Column(
+          children: [
+            Image.asset(
+              'assets/images/logo.png',
+              width: 200,
+              height: 200,
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Welcome to the Aladia',
+              style: TextStyle(fontSize: 18),
+            ),
+          ],
         ),
       ),
     );

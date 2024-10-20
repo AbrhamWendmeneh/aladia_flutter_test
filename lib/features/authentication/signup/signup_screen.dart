@@ -79,11 +79,13 @@ class _SignupScreenState extends State<SignupScreen> {
           MediaQuery.paddingOf(context).bottom,
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             const SizedBox(height: 24),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const SignupHeader(),
                     const SizedBox(height: 40),

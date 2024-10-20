@@ -1,6 +1,8 @@
 import 'package:aladia_flutter_test/app/app.dart';
+import 'package:aladia_flutter_test/providers/theme_provider.dart';
 import 'package:aladia_flutter_test/widgets/theme_toggle.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 import 'package:aladia_flutter_test/features/authentication/login/login_form.dart';
@@ -39,7 +41,14 @@ Widget verifyScreenUseCase(BuildContext context) {
   return const VerifyScreen(email: 'test@example.com');
 }
 
-@widgetbook.UseCase(name: 'Theme Toggle Switch', type: ThemeToggleSwitch)
+@widgetbook.UseCase(name: 'input field', type: ThemeToggleSwitch)
 Widget themeToggleSwitchUseCase(BuildContext context) {
-  return const ThemeToggleSwitch();
+  return MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+        create: (context) => ThemeProvider(),
+      ),
+    ],
+    child: const ThemeToggleSwitch(),
+  );
 }

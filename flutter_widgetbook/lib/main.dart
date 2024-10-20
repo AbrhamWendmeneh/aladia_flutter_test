@@ -50,6 +50,7 @@ class WidgetbookApp extends StatelessWidget {
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
           return MaterialApp(
+            debugShowCheckedModeBanner: false,
             theme: lightTheme,
             darkTheme: darkTheme,
             themeMode: themeProvider.themeMode,
@@ -129,18 +130,20 @@ class WidgetbookApp extends StatelessWidget {
               addons: [
                 DeviceFrameAddon(
                   devices: [
-                    Devices.android.samsungGalaxyA50,
+                    Devices.android.samsungGalaxyS20,
                     Devices.ios.iPhone13,
                   ],
-                  initialDevice: Devices.android.samsungGalaxyA50,
+                  initialDevice: Devices.android.samsungGalaxyS20,
                 ),
                 MaterialThemeAddon(
                   themes: [
                     WidgetbookTheme(name: 'light', data: lightTheme),
                     WidgetbookTheme(name: 'dark', data: darkTheme),
                   ],
-                  initialTheme:
-                      WidgetbookTheme(name: 'light', data: lightTheme),
+                  initialTheme: WidgetbookTheme(
+                    name: 'light',
+                    data: lightTheme,
+                  ),
                 ),
               ],
               integrations: [WidgetbookCloudIntegration()],
